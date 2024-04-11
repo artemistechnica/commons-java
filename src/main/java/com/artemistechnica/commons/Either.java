@@ -12,7 +12,7 @@ public class Either<A, B> {
     public final Optional<A> left;
     public final Optional<B> right;
 
-    private Either(A left, B right) {
+    protected Either(A left, B right) {
         this.left   = Optional.ofNullable(left);
         this.right  = Optional.ofNullable(right);
         if (this.left.isEmpty() && this.right.isEmpty())
