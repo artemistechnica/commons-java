@@ -5,7 +5,7 @@ import com.artemistechnica.commons.errors.SimpleError;
 
 public class EitherE<A> extends Either<SimpleError, A> {
 
-    public EitherE(SimpleError left, A right) {
+    private EitherE(SimpleError left, A right) {
         super(left, right);
     }
 

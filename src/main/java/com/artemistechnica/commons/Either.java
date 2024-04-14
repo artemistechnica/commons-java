@@ -62,4 +62,20 @@ public class Either<A, B> {
     public static <A, B> Either<A, B> right(B right) {
         return new Either<>(null, right);
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isRight() {
+        return right.isPresent();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isLeft() {
+        return left.isPresent();
+    }
 }

@@ -1,7 +1,11 @@
 package com.artemistechnica.commons;
 
 import com.artemistechnica.commons.utils.EitherE;
+import com.artemistechnica.commons.utils.Retry;
 import com.artemistechnica.commons.utils.Try;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main implements Try {
     public static void main(String[] args) {
@@ -10,7 +14,7 @@ public class Main implements Try {
         app.doThing();
     }
 
-    public static class App implements Try {
+    public static class App implements Retry {
 
         public void doThing() {
             Either<String, Integer> e0 = Either.right(1);
@@ -28,6 +32,13 @@ public class Main implements Try {
 
             EitherE<Integer> e6 = tryFn(() -> {
                 throw new RuntimeException("Something bad happened");
+            });
+
+            AtomicReference<Integer> count = new AtomicReference<>(0);
+            EitherE<Integer> res0 = retry(3, () -> {
+                int c = count.get();
+                count.set(c + 1);
+                return 1 / c;
             });
         }
     }
