@@ -1,8 +1,10 @@
 package com.artemistechnica.commons;
 
-import com.artemistechnica.commons.utils.EitherE;
-import com.artemistechnica.commons.utils.Retry;
-import com.artemistechnica.commons.utils.Try;
+
+import com.artemistechnica.commons.datatypes.Either;
+import com.artemistechnica.commons.datatypes.EitherE;
+import com.artemistechnica.commons.errors.Retry;
+import com.artemistechnica.commons.errors.Try;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;

@@ -1,6 +1,6 @@
-package com.artemistechnica.commons.utils;
+package com.artemistechnica.commons.errors;
 
-import com.artemistechnica.commons.errors.SimpleError;
+import com.artemistechnica.commons.datatypes.EitherE;
 
 import java.util.function.Supplier;
 

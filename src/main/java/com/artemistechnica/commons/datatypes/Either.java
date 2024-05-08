@@ -1,4 +1,4 @@
-package com.artemistechnica.commons;
+package com.artemistechnica.commons.datatypes;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,7 +37,7 @@ public class Either<A, B> {
      * @return
      * @param <C>
      */
-    public <C> Either<A, C> flatMap(Function<B, Either<A, C>> fn) {
+    public <C, D extends Either<A, C>> Either<A, C> flatMap(Function<B, D> fn) {
         return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(fn).get());
     }
 
