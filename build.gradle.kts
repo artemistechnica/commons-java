@@ -44,7 +44,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/artemtechnica/commons")
+            url = uri("https://maven.pkg.github.com/artemistechnica")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
