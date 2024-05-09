@@ -2,7 +2,7 @@ name: Build
 on:
   push
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
