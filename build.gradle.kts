@@ -1,8 +1,7 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-
 plugins {
-    id("java")
+    id("java-library")
     id("java-test-fixtures")
+    id("maven-publish")
 }
 
 group = "com.artemistechnica.commons"
@@ -20,7 +19,6 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     maxHeapSize = "1G"
-
     debugOptions {
         enabled = true
         host = "localhost"
@@ -33,6 +31,24 @@ tasks.test {
         showStandardStreams = true
         debug {
             events("started", "skipped", "failed")
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/octocat/hello-world")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
