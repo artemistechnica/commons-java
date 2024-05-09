@@ -4,8 +4,9 @@ on:
     tags:
       - "**"
 jobs:
+  build:
+    uses: ./.github/workflows/build.yml
   publish:
-    needs: [build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
