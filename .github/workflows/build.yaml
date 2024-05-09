@@ -1,6 +1,12 @@
 name: Build
 on:
   push:
+      branches:
+        - 'main'
+        - 'develop'
+        - 'develop/**'
+        - 'feature/**'
+        - 'release/**'
       tags-ignore:
         - '**'
   workflow_call:
