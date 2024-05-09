@@ -17,7 +17,7 @@ public interface Retry extends Try {
         EitherE<A> result = EitherE.failure(SimpleError.create("Function did not execute"));
         while (times > 0) {
             --times;
-            result = tryFn(fn);
+            result = tryFunc(fn);
             if (result.isRight()) break;
         }
         return result;

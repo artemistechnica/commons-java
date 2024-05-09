@@ -12,16 +12,11 @@ public class EitherE<A> extends Either<SimpleError, A> {
 
     @Override
     public <C> EitherE<C> map(Function<A, C> fn) {
-        return left.map(l -> EitherE.<C>failure(l)).orElseGet(() -> right.map(right -> EitherE.<C>success(fn.apply(right))).get());
+        return left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
     }
 
-//    public <B> EitherE<B> flatMapE(Function<A, EitherE<B>> fn) {
-////        return (this.isLeft()) ? EitherE.<B>failure(this.left.get()) : right.map(v -> fn.apply(v)).get();
-//        return this.left.map(err -> EitherE.<B>failure(err)).orElse(this.right.map(v -> fn.apply(v)).get());//.orElseGet(() -> this.right.map(v -> fn.apply(v)).get());
-//    }
-
     public <B> EitherE<B> flatMapE(Function<A, EitherE<B>> fn) {
-        return this.left.map(err -> EitherE.<B>failure(err)).orElse(this.right.map(v -> fn.apply(v)).get());
+        return this.left.map(EitherE::<B>failure).orElse(this.right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
     }
 
     public static <A> EitherE<A> failure(SimpleError error) {

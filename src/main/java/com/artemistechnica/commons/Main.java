@@ -6,7 +6,6 @@ import com.artemistechnica.commons.datatypes.EitherE;
 import com.artemistechnica.commons.errors.Retry;
 import com.artemistechnica.commons.errors.Try;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Main implements Try {
@@ -32,7 +31,7 @@ public class Main implements Try {
                 e.printStackTrace();
             }
 
-            EitherE<Integer> e6 = tryFn(() -> {
+            EitherE<Integer> e6 = tryFunc(() -> {
                 throw new RuntimeException("Something bad happened");
             });
 

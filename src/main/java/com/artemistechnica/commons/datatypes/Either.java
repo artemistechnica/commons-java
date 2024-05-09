@@ -1,5 +1,7 @@
 package com.artemistechnica.commons.datatypes;
 
+import com.artemistechnica.commons.errors.Retry;
+
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -8,7 +10,7 @@ import java.util.function.Function;
  * @param <A>
  * @param <B>
  */
-public class Either<A, B> {
+public class Either<A, B> implements Retry {
     public final Optional<A> left;
     public final Optional<B> right;
 
