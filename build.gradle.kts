@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("java-test-fixtures")
     id("maven-publish")
+    id("io.freefair.lombok") version "8.6"
 }
 
 group = "com.artemistechnica.commons"
@@ -12,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    api("com.fasterxml.jackson.core:jackson-databind:2.17.1")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
