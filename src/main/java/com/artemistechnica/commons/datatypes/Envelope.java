@@ -22,7 +22,8 @@ public class Envelope<A> {
         this.errors = errors;
     }
 
-    public static <A> Envelope<A> mkSuccess(A data) {
+    @SafeVarargs
+    public static <A> Envelope<A> mkSuccess(A... data) {
         Code code = Code.mk(URI.create("sampleapp://localhost/success#200"), 200, "SUCCESS");
         return new Envelope<>(code, List.of(data), null);
     }
