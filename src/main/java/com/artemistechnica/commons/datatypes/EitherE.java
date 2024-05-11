@@ -30,6 +30,10 @@ public class EitherE<A> extends Either<SimpleError, A> {
                 .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
     }
 
+    public <B> B materialize(Function<SimpleError, B> errFn, Function<A, B> fn) {
+        return this.left.map(errFn).orElseGet(() -> right.map(fn).get());
+    }
+
     public static <A> EitherE<A> failure(SimpleError error) {
         return new EitherE<>(error, null);
     }
