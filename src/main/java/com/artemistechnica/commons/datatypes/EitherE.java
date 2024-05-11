@@ -15,8 +15,19 @@ public class EitherE<A> extends Either<SimpleError, A> {
         return left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
     }
 
+    public <B> EitherE<B> biMapE(Function<SimpleError, B> errFn, Function<A, B> fn) {
+        return this.left.map(err -> EitherE.success(errFn.apply(err)))
+                .orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
+    }
+
     public <B> EitherE<B> flatMapE(Function<A, EitherE<B>> fn) {
-        return this.left.map(EitherE::<B>failure).orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
+        return this.left.map(EitherE::<B>failure)
+                .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
+    }
+
+    public <B> EitherE<B> biFlatMapE(Function<SimpleError, EitherE<B>> errFn, Function<A, EitherE<B>> fn) {
+        return this.left.map(errFn)
+                .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
     }
 
     public static <A> EitherE<A> failure(SimpleError error) {
