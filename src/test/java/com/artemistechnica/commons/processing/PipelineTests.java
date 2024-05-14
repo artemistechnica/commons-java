@@ -1,11 +1,10 @@
 package com.artemistechnica.commons.processing;
 
-import com.artemistechnica.commons.datatypes.Either;
 import com.artemistechnica.commons.datatypes.EitherE;
-import com.artemistechnica.commons.errors.SimpleError;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -51,9 +50,28 @@ public class PipelineTests implements Pipeline {
             return pipe.apply(name).flatMapE(mat -> mat.materialize(str -> str));
         };
 
-        Either<SimpleError, String> result = fn.apply("Nick", p0);
-
+        EitherE<String> result = fn.apply("Nick", p0);
         assert(result.isRight());
         assert(result.right.get().equals("Hello, Nick!"));
+    }
+
+    @Test
+    public void testSimplePipelineMultipleExecution() {
+        int count = 10;
+        List<Function<Integer, EitherE<Integer>>> fns = IntStream.rangeClosed(1, count).boxed().toList()
+                .stream().map(i -> (Function<Integer, EitherE<Integer>>) integer -> { System.out.println(UUID.randomUUID().toString()); return EitherE.success(integer + 1); }).toList();
+
+        Function<Integer, EitherE<Integer>>[] steps = fns.<Function<Integer, EitherE<Integer>>>toArray(new Function[0]);
+        Function<Integer, EitherE<PipelineResult.Materializer<Integer>>> pipelineFn = this.<Integer>pipeline(steps);
+
+        EitherE<Integer> result = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        assert(result.isRight());
+        assert(result.right.isPresent());
+        assert(result.right.get() == count);
+
+        EitherE<Integer> result0 = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        assert(result0.isRight());
+        assert(result0.right.isPresent());
+        assert(result0.right.get() == count);
     }
 }

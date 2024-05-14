@@ -80,4 +80,15 @@ public class Either<A, B> implements Retry {
     public boolean isLeft() {
         return left.isPresent();
     }
+
+    /**
+     *
+     * @param errFn
+     * @param fn
+     * @return
+     * @param <C>
+     */
+    public <C> C materialize(Function<A, C> errFn, Function<B, C> fn) {
+        return this.left.map(errFn).orElseGet(() -> right.map(fn).get());
+    }
 }
