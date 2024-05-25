@@ -2,6 +2,7 @@ package com.artemistechnica.commons.errors;
 
 import com.artemistechnica.commons.datatypes.EitherE;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface Try {
@@ -17,6 +18,13 @@ public interface Try {
         try { return fn.get(); } catch (Exception e) {
             System.out.printf("CAUGHT EXCEPTION %s\n", e.getMessage());
             return EitherE.failure(SimpleError.create(e));
+        }
+    }
+
+    default <A> Optional<A> tryFuncOpt(Supplier<A> fn) {
+        try { return Optional.ofNullable(fn.get()); } catch (Exception e) {
+            System.out.printf("CAUGHT EXCEPTION %s\n", e.getMessage());
+            return Optional.empty();
         }
     }
 }

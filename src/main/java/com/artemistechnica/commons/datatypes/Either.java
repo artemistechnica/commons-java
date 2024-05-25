@@ -89,6 +89,17 @@ public class Either<A, B> implements Retry {
      * @param <C>
      */
     public <C> C materialize(Function<A, C> errFn, Function<B, C> fn) {
-        return this.left.map(errFn).orElseGet(() -> right.map(fn).get());
+        return this.left.map(errFn).orElseGet(() -> right.flatMap(v -> tryFuncOpt(() -> fn.apply(v))).get());
+    }
+
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <C>
+     */
+    public <C> Optional<C> materializeOpt(Function<B, C> fn) {
+        Function<B, Optional<C>> func = (B v) -> right.flatMap(prevValue -> tryFuncOpt(() -> fn.apply(prevValue)));
+        return this.left.map(err -> Optional.<C>empty()).orElseGet(() -> right.flatMap(func));
     }
 }
