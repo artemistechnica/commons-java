@@ -3,6 +3,7 @@ package com.artemistechnica.commons.datatypes;
 import com.artemistechnica.commons.errors.Retry;
 
 import java.util.Optional;
+import java.util.concurrent.*;
 import java.util.function.Function;
 
 /**
@@ -11,6 +12,9 @@ import java.util.function.Function;
  * @param <B>
  */
 public class Either<A, B> implements Retry {
+
+    protected final ExecutorService _asyncService = Executors.newVirtualThreadPerTaskExecutor();
+
     public final Optional<A> left;
     public final Optional<B> right;
 
@@ -31,6 +35,19 @@ public class Either<A, B> implements Retry {
      */
     public <C> Either<A, C> map(Function<B, C> fn) {
         return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get());
+    }
+
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <C>
+     */
+    public <C> Future<Either<A, C>> mapAsync(Function<B, C> fn) {
+        return _asyncService.submit(
+                // Callable<Either<A,C>>
+                () -> left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get())
+        );
     }
 
     /**
