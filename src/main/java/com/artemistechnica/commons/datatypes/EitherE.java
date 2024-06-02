@@ -16,7 +16,7 @@ public class EitherE<A> extends Either<SimpleError, A> {
         return left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
     }
 
-    public <C> CompletableFutureE<C, EitherE<C>> mapAsyncE(Function<A, C> fn) {
+    public <C> CompletableFutureE<C> mapAsyncE(Function<A, C> fn) {
         return CompletableFutureE.create(CompletableFuture.supplyAsync(
                 () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
                 _asyncService

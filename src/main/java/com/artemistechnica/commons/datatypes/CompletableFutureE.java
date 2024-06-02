@@ -6,16 +6,16 @@ import com.artemistechnica.commons.errors.SimpleError;
 import java.util.concurrent.*;
 import java.util.function.Function;
 
-public class CompletableFutureE<A, F extends EitherE<A>> implements Retry {
+public class CompletableFutureE<A> implements Retry {
 
-        private final ExecutorService _asyncService = Executors.newVirtualThreadPerTaskExecutor();
+        private final ExecutorService               _asyncService = Executors.newVirtualThreadPerTaskExecutor();
         private final CompletableFuture<EitherE<A>> _future;
 
         private CompletableFutureE(CompletableFuture<EitherE<A>> result) {
             this._future = result;
         }
 
-        public <C> CompletableFutureE<C, EitherE<C>> mapAsyncE(Function<A, C> fn) {
+        public <C> CompletableFutureE<C> mapAsyncE(Function<A, C> fn) {
             return create(
                     _future.thenApplyAsync(
                             r -> r.left.map(EitherE::<C>failure).orElseGet(() -> r.right.map(right -> tryFunc(() -> fn.apply(right))).get()),
@@ -40,7 +40,7 @@ public class CompletableFutureE<A, F extends EitherE<A>> implements Retry {
             }
         }
 
-        public static <A> CompletableFutureE<A, EitherE<A>> create(CompletableFuture<EitherE<A>> result) {
+        public static <A> CompletableFutureE<A> create(CompletableFuture<EitherE<A>> result) {
             return new CompletableFutureE<>(result);
         }
     }
