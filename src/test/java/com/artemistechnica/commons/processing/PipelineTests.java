@@ -1,5 +1,6 @@
 package com.artemistechnica.commons.processing;
 
+import com.artemistechnica.commons.datatypes.CompletableFutureE;
 import com.artemistechnica.commons.datatypes.EitherE;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +20,22 @@ public class PipelineTests implements Pipeline {
                 .stream().map(i -> (Function<Integer, EitherE<Integer>>) integer -> EitherE.success(integer + 1)).toList();
 
         Function<Integer, EitherE<Integer>>[] steps = fns.<Function<Integer, EitherE<Integer>>>toArray(new Function[0]);
-        Function<Integer, EitherE<PipelineResult.Materializer<Integer>>> pipelineFn = this.<Integer>pipeline(steps);
+        Function<Integer, EitherE<PipelineResult.Materializer<Integer>>> pipelineFn = this.pipeline(steps);
         EitherE<Integer> result = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        assert(result.isRight());
+        assert(result.right.isPresent());
+        assert(result.right.get() == count);
+    }
+
+    @Test
+    public void testSimpleAsyncPipeline() {
+        int count = 100;
+        List<Function<Integer, EitherE<Integer>>> fns = IntStream.rangeClosed(1, count).boxed().toList()
+                .stream().map(i -> (Function<Integer, EitherE<Integer>>) integer -> EitherE.success(integer + 1)).toList();
+
+        Function<Integer, EitherE<Integer>>[] steps = fns.<Function<Integer, EitherE<Integer>>>toArray(new Function[0]);
+        Function<Integer, CompletableFutureE<PipelineResult.Materializer<Integer>>> pipelineFn = this.pipelineAsync(steps);
+        EitherE<Integer> result = pipelineFn.apply(0).flatMapAsyncE(mat -> mat.materialize(i -> i)).materialize();
         assert(result.isRight());
         assert(result.right.isPresent());
         assert(result.right.get() == count);

@@ -1,6 +1,7 @@
 package com.artemistechnica.commons.datatypes;
 
 import com.artemistechnica.commons.errors.SimpleError;
+import com.artemistechnica.commons.utils.Threads;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -17,10 +18,12 @@ public class EitherE<A> extends Either<SimpleError, A> {
     }
 
     public <C> CompletableFutureE<C> mapAsyncE(Function<A, C> fn) {
-        return CompletableFutureE.create(CompletableFuture.supplyAsync(
-                () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
-                _asyncService
-        ));
+        return CompletableFutureE.create(
+                CompletableFuture.supplyAsync(
+                        () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
+                        Threads.executorService()
+                )
+        );
     }
 
     public <B> EitherE<B> biMapE(Function<SimpleError, B> errFn, Function<A, B> fn) {

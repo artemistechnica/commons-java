@@ -1,10 +1,12 @@
 package com.artemistechnica.commons.processing;
 
 
+import com.artemistechnica.commons.datatypes.CompletableFutureE;
 import com.artemistechnica.commons.datatypes.EitherE;
 import com.artemistechnica.commons.errors.Retry;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public interface Pipeline {
@@ -19,6 +21,33 @@ public interface Pipeline {
                             (acc0, acc1) -> acc1
                     );
             return resultE.map(PipelineResult::construct);
+        };
+    }
+
+    default <A> Function<A, CompletableFutureE<PipelineResult.Materializer<A>>> pipelineAsync(Function<A, EitherE<A>>... stages) {
+        return (A ctx) -> {
+            CompletableFutureE<A> resultE = Arrays.stream(stages)
+                    .map(this::step)
+                    .reduce(
+                            CompletableFutureE.create(CompletableFuture.completedFuture(EitherE.success(ctx))),
+                            (acc, step) -> acc.flatMapAsyncE(step),
+                            (acc0, acc1) -> acc1
+                    );
+            return resultE.mapAsyncE(PipelineResult::construct);
+        };
+    }
+
+    default <A> Function<A, CompletableFutureE<PipelineResult.Materializer<A>>> pipelineAsyncParallel(Function<A, EitherE<A>>... stages) {
+        return (A ctx) -> {
+            CompletableFutureE<A> resultE = Arrays.stream(stages)
+                    .map(this::step)
+                    .parallel()
+                    .reduce(
+                            CompletableFutureE.create(CompletableFuture.completedFuture(EitherE.success(ctx))),
+                            (acc, step) -> acc.flatMapAsyncE(step),
+                            (acc0, acc1) -> acc1
+                    );
+            return resultE.mapAsyncE(PipelineResult::construct);
         };
     }
 
