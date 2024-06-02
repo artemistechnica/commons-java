@@ -16,13 +16,6 @@ public class EitherE<A> extends Either<SimpleError, A> {
         return left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
     }
 
-//    public <C> CompletableFuture<EitherE<C>> mapAsyncE(Function<A, C> fn) {
-//        return CompletableFuture.supplyAsync(
-//                () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
-//                _asyncService
-//        );
-//    }
-
     public <C> CompletableFutureE<C, EitherE<C>> mapAsyncE(Function<A, C> fn) {
         return CompletableFutureE.create(CompletableFuture.supplyAsync(
                 () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
@@ -52,27 +45,4 @@ public class EitherE<A> extends Either<SimpleError, A> {
     public static <A> EitherE<A> success(A right) {
         return new EitherE<>(null, right);
     }
-
-//    public static final class CompletableFutureE<A, F extends EitherE<A>> implements Retry {
-//
-//        private final ExecutorService               _asyncService = Executors.newVirtualThreadPerTaskExecutor();
-//        private final CompletableFuture<EitherE<A>> _future;
-//
-//        private CompletableFutureE(CompletableFuture<EitherE<A>> result) {
-//            this._future = result;
-//        }
-//
-//        public <C> CompletableFutureE<C, EitherE<C>> mapAsyncE(Function<A, C> fn) {
-//            return create(
-//                    _future.thenApplyAsync(
-//                            r -> r.left.map(EitherE::<C>failure).orElseGet(() -> r.right.map(right -> tryFunc(() -> fn.apply(right))).get()),
-//                            _asyncService
-//                    )
-//            );
-//        }
-//
-//        public static <A> CompletableFutureE<A, EitherE<A>> create(CompletableFuture<EitherE<A>> result) {
-//            return new CompletableFutureE<>(result);
-//        }
-//    }
 }

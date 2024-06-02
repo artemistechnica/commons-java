@@ -4,20 +4,28 @@ import com.artemistechnica.commons.errors.SimpleError;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class EitherTests {
 
     @Test
     public void testSimpleEitherMapAsync() {
-        Either<String, Integer> e0  = Either.right(42);
-        Future<Either<String, String>> result = e0.mapAsync(Object::toString);
-        EitherE<Integer> e1 = EitherE.success(42);
-        CompletableFutureE<String, EitherE<String>> result1     = e1.mapAsyncE(Object::toString);
-        CompletableFutureE<Integer, EitherE<Integer>> result2 = e1
+        CompletableFutureE<Integer, EitherE<Integer>> result2 = EitherE.success(42)
                 .mapAsyncE(Object::toString)
                 .mapAsyncE(Integer::parseInt);
         EitherE<Integer> finalResult = result2.materialize();
+
+        assert(finalResult.isRight());
+    }
+
+    @Test
+    public void testSimpleEitherMapAsyncFailure() {
+        CompletableFutureE<Integer, EitherE<Integer>> result2 = EitherE.success(42)
+                .mapAsyncE(Object::toString)
+                .mapAsyncE(Integer::parseInt);
+        EitherE<Integer> finalResult = result2.materialize(0, TimeUnit.NANOSECONDS);
+
+        assert(finalResult.isLeft());
     }
 
     @Test
