@@ -27,10 +27,28 @@ public class CompletableFutureE<A> implements Retry {
         );
     }
 
+    public <C> CompletableFutureE<C> mapAsyncE(int retryCount, Function<A, C> fn) {
+        return create(
+                _future.thenApplyAsync(
+                        r -> r.left.map(EitherE::<C>failure).orElseGet(() -> r.right.map(right -> retry(retryCount, () -> fn.apply(right))).get()),
+                        Threads.executorService()
+                )
+        );
+    }
+
     public <C> CompletableFutureE<C> flatMapAsyncE(Function<A, EitherE<C>> fn) {
         return create(
                 _future.thenApplyAsync(
                         r -> r.left.map(EitherE::<C>failure).orElseGet(() -> r.right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get()),
+                        Threads.executorService()
+                )
+        );
+    }
+
+    public <C> CompletableFutureE<C> flatMapAsyncE(int retryCount, Function<A, EitherE<C>> fn) {
+        return create(
+                _future.thenApplyAsync(
+                        r -> r.left.map(EitherE::<C>failure).orElseGet(() -> r.right.map(right -> retryEitherEFunc(retryCount, () -> fn.apply(right))).get()),
                         Threads.executorService()
                 )
         );
@@ -55,4 +73,4 @@ public class CompletableFutureE<A> implements Retry {
     public static <A> CompletableFutureE<A> create(CompletableFuture<EitherE<A>> result) {
         return new CompletableFutureE<>(result);
     }
-    }
+}

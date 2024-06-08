@@ -6,6 +6,8 @@ import com.artemistechnica.commons.utils.Threads;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import static com.artemistechnica.commons.utils.HelperFunctions.getIfPresent;
+
 public class EitherE<A> extends Either<SimpleError, A> {
 
     private EitherE(SimpleError left, A right) {
@@ -14,13 +16,22 @@ public class EitherE<A> extends Either<SimpleError, A> {
 
     @Override
     public <C> EitherE<C> map(Function<A, C> fn) {
-        return left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get());
+        return left.map(EitherE::<C>failure).orElseGet(() -> getIfPresent(right.map(right -> tryFunc(() -> fn.apply(right)))));
     }
 
     public <C> CompletableFutureE<C> mapAsyncE(Function<A, C> fn) {
         return CompletableFutureE.create(
                 CompletableFuture.supplyAsync(
-                        () -> left.map(EitherE::<C>failure).orElseGet(() -> right.map(right -> tryFunc(() -> fn.apply(right))).get()),
+                        () -> left.map(EitherE::<C>failure).orElseGet(() -> getIfPresent(right.map(right -> tryFunc(() -> fn.apply(right))))),
+                        Threads.executorService()
+                )
+        );
+    }
+
+    public <C> CompletableFutureE<C> mapAsyncE(int retry, Function<A, C> fn) {
+        return CompletableFutureE.create(
+                CompletableFuture.supplyAsync(
+                        () -> left.map(EitherE::<C>failure).orElseGet(() -> getIfPresent(right.map(right -> retry(retry, () -> fn.apply(right))))),
                         Threads.executorService()
                 )
         );
