@@ -10,6 +10,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
+/**
+ * A {@link CompletableFutureE} wraps a {@link CompletableFuture}, representing a value that will be defined at
+ * some <i>future</i> point in time.
+ *
+ * @param <A>
+ */
 public class CompletableFutureE<A> implements Retry {
 
     private final CompletableFuture<EitherE<A>> _future;
@@ -18,6 +24,12 @@ public class CompletableFutureE<A> implements Retry {
         this._future = result;
     }
 
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <C>
+     */
     public <C> CompletableFutureE<C> mapAsyncE(Function<A, C> fn) {
         return create(
                 _future.thenApplyAsync(
@@ -27,6 +39,13 @@ public class CompletableFutureE<A> implements Retry {
         );
     }
 
+    /**
+     *
+     * @param retryCount
+     * @param fn
+     * @return
+     * @param <C>
+     */
     public <C> CompletableFutureE<C> mapAsyncE(int retryCount, Function<A, C> fn) {
         return create(
                 _future.thenApplyAsync(
@@ -36,6 +55,12 @@ public class CompletableFutureE<A> implements Retry {
         );
     }
 
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <C>
+     */
     public <C> CompletableFutureE<C> flatMapAsyncE(Function<A, EitherE<C>> fn) {
         return create(
                 _future.thenApplyAsync(
@@ -45,6 +70,13 @@ public class CompletableFutureE<A> implements Retry {
         );
     }
 
+    /**
+     *
+     * @param retryCount
+     * @param fn
+     * @return
+     * @param <C>
+     */
     public <C> CompletableFutureE<C> flatMapAsyncE(int retryCount, Function<A, EitherE<C>> fn) {
         return create(
                 _future.thenApplyAsync(
@@ -54,6 +86,10 @@ public class CompletableFutureE<A> implements Retry {
         );
     }
 
+    /**
+     *
+     * @return
+     */
     public EitherE<A> materialize() {
         try {
             return _future.get();
@@ -62,6 +98,12 @@ public class CompletableFutureE<A> implements Retry {
         }
     }
 
+    /**
+     *
+     * @param timeout
+     * @param timeUnit
+     * @return
+     */
     public EitherE<A> materialize(long timeout, TimeUnit timeUnit) {
         try {
             return _future.get(timeout, timeUnit);
@@ -70,6 +112,12 @@ public class CompletableFutureE<A> implements Retry {
         }
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     * @param <A>
+     */
     public static <A> CompletableFutureE<A> create(CompletableFuture<EitherE<A>> result) {
         return new CompletableFutureE<>(result);
     }

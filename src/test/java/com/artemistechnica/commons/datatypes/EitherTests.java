@@ -189,4 +189,18 @@ public class EitherTests {
         assert(result.isPresent());
         assert(result.get().equals("42"));
     }
+
+    @Test
+    public void testSimpleEitherESuccess() {
+        EitherE<String> initE   = EitherE.success("World");
+        EitherE<String> resultE = initE.map(name -> String.format("Hello, %s!", name));
+        assert(resultE.isRight());
+    }
+
+    @Test
+    public void testSimpleEitherEFailure() {
+        EitherE<String> initE   = EitherE.failure(SimpleError.create("Exception raised"));
+        EitherE<String> resultE = initE.map(name -> String.format("Hello, %s!", name));
+        assert(resultE.isLeft());
+    }
 }

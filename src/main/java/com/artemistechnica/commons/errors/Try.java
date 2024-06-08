@@ -7,6 +7,12 @@ import java.util.function.Supplier;
 
 public interface Try {
 
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <A>
+     */
     default <A> EitherE<A> tryFunc(Supplier<A> fn) {
         try { return EitherE.success(fn.get()); } catch (Exception e) {
             System.out.printf("CAUGHT EXCEPTION %s\n", e.getMessage());
@@ -14,6 +20,12 @@ public interface Try {
         }
     }
 
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <A>
+     */
     default <A> EitherE<A> tryEitherEFunc(Supplier<EitherE<A>> fn) {
         try { return fn.get(); } catch (Exception e) {
             System.out.printf("CAUGHT EXCEPTION %s\n", e.getMessage());
@@ -21,6 +33,12 @@ public interface Try {
         }
     }
 
+    /**
+     *
+     * @param fn
+     * @return
+     * @param <A>
+     */
     default <A> Optional<A> tryFuncOpt(Supplier<A> fn) {
         try { return Optional.ofNullable(fn.get()); } catch (Exception e) {
             System.out.printf("CAUGHT EXCEPTION %s\n", e.getMessage());

@@ -23,6 +23,13 @@ public interface Retry extends Try {
         return result;
     }
 
+    /**
+     *
+     * @param times
+     * @param fn
+     * @return
+     * @param <A>
+     */
     default <A> EitherE<A> retryEitherEFunc(int times, Supplier<EitherE<A>> fn) {
         EitherE<A> result = EitherE.failure(SimpleError.create("Function did not execute"));
         while (times > 0) {
