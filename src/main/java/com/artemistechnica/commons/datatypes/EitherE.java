@@ -112,6 +112,22 @@ public class EitherE<A> extends Either<SimpleError, A> {
 
     /**
      *
+     * @param fn
+     * @return
+     * @param <C>
+     */
+    public <C> CompletableFutureE<EitherE<C>> flatMapAsyncE(Function<A, EitherE<C>> fn) {
+        return CompletableFutureE.createEitherE(
+                CompletableFuture.supplyAsync(
+                        () -> this.left.map(EitherE::<C>failure)
+                                .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get()),
+                        Threads.executorService()
+                )
+        );
+    }
+
+    /**
+     *
      * @param errFn
      * @param fn
      * @return

@@ -127,4 +127,15 @@ public class CompletableFutureE<A> implements Retry {
     public static <A> CompletableFutureE<A> create(CompletableFuture<EitherE<A>> result) {
         return new CompletableFutureE<>(result);
     }
+
+    /**
+     *
+     * @param result
+     * @return
+     * @param <A>
+     */
+    public static <A> CompletableFutureE<EitherE<A>> createEitherE(CompletableFuture<EitherE<A>> result) {
+        // Wrap in an EitherE
+        return new CompletableFutureE<>(result.thenApply(eitherE -> eitherE.map(EitherE::success)));
+    }
 }
