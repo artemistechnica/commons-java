@@ -104,7 +104,7 @@ public class Either<A, B> implements Retry {
      * @return
      * @param <C>
      */
-    public <C> C materialize(Function<A, C> errFn, Function<B, C> fn) {
+    public <C> C resolve(Function<A, C> errFn, Function<B, C> fn) {
         return this.left.map(errFn).orElseGet(() -> right.flatMap(v -> tryFuncOpt(() -> fn.apply(v))).get());
     }
 
@@ -114,7 +114,7 @@ public class Either<A, B> implements Retry {
      * @return
      * @param <C>
      */
-    public <C> Optional<C> materializeOpt(Function<B, C> fn) {
+    public <C> Optional<C> resolveOpt(Function<B, C> fn) {
         Function<B, Optional<C>> func = (B v) -> right.flatMap(prevValue -> tryFuncOpt(() -> fn.apply(prevValue)));
         return this.left.map(err -> Optional.<C>empty()).orElseGet(() -> right.flatMap(func));
     }
