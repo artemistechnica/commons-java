@@ -114,6 +114,12 @@ public class CompletableFutureE<A> implements Retry {
 
     /**
      *
+     * @return
+     */
+    public boolean isDone() { return _future.isDone(); }
+
+    /**
+     *
      * @param result
      * @return
      * @param <A>
