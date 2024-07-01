@@ -120,6 +120,12 @@ public class CompletableFutureE<A> implements Retry {
 
     /**
      *
+     * @return
+     */
+    public EitherE<A> join() { return _future.join(); }
+
+    /**
+     *
      * @param result
      * @return
      * @param <A>

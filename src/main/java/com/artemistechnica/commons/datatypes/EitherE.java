@@ -157,4 +157,14 @@ public class EitherE<A> extends Either<SimpleError, A> {
     public static <A> EitherE<A> success(A right) {
         return new EitherE<>(null, right);
     }
+
+    /**
+     * A convenience function aimed at readability for initializing an {@link EitherE} pipeline.
+     * @param a
+     * @return
+     * @param <A>
+     */
+    public static <A> EitherE<A> mkEither(A a) {
+        return success(a);
+    }
 }
