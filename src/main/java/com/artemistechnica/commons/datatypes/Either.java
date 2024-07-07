@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @param <A>
  * @param <B>
  */
-public class Either<A, B> implements Retry {
+public class Either<A, B> implements BiSum<A, B>, Retry {
 
     public final Optional<A> left;
     public final Optional<B> right;
@@ -26,38 +26,38 @@ public class Either<A, B> implements Retry {
             throw new RuntimeException("Either must have exactly one defined member. Found both members as defined");
     }
 
-    /**
-     * Map
-     * @param fn
-     * @return
-     * @param <C>
-     */
-    public <C> Either<A, C> map(Function<B, C> fn) {
-        return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get());
-    }
+//    /**
+//     * Map
+//     * @param fn
+//     * @return
+//     * @param <C>
+//     */
+//    public <C> Either<A, C> map(Function<B, C> fn) {
+//        return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get());
+//    }
 
-    /**
-     *
-     * @param fn
-     * @return
-     * @param <C>
-     */
-    public <C> Future<Either<A, C>> mapAsync(Function<B, C> fn) {
-        return Threads.executorService().submit(
-                // Callable<Either<A,C>>
-                () -> left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get())
-        );
-    }
+//    /**
+//     *
+//     * @param fn
+//     * @return
+//     * @param <C>
+//     */
+//    public <C> Future<Either<A, C>> mapAsync(Function<B, C> fn) {
+//        return Threads.executorService().submit(
+//                // Callable<Either<A,C>>
+//                () -> left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(right -> Either.<A, C>right(fn.apply(right))).get())
+//        );
+//    }
 
-    /**
-     * Flatmap
-     * @param fn
-     * @return
-     * @param <C>
-     */
-    public <C, D extends Either<A, C>> Either<A, C> flatMap(Function<B, D> fn) {
-        return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(fn).get());
-    }
+//    /**
+//     * Flatmap
+//     * @param fn
+//     * @return
+//     * @param <C>
+//     */
+//    public <C, D extends Either<A, C>> Either<A, C> flatMap(Function<B, D> fn) {
+//        return left.map(l -> Either.<A, C>left(l)).orElseGet(() -> right.map(fn).get());
+//    }
 
     /**
      * Constructor
@@ -118,4 +118,35 @@ public class Either<A, B> implements Retry {
         Function<B, Optional<C>> func = (B v) -> right.flatMap(prevValue -> tryFuncOpt(() -> fn.apply(prevValue)));
         return this.left.map(err -> Optional.<C>empty()).orElseGet(() -> right.flatMap(func));
     }
+
+    @Override
+    public Optional<A> left() {
+        return left;
+    }
+
+    @Override
+    public Optional<B> right() {
+        return right;
+    }
+
+    @Override
+    public <C, F extends BiSum<A, C>> F pureLeft(A l) {
+        return (F) Either.left(l);
+    }
+
+    @Override
+    public <C, F extends BiSum<A, C>> F pureRight(C l) {
+        return (F) Either.right(l);
+    }
+
+
+//    @Override
+//    public <C> Either pureLeft(A l) {
+//        return null;
+//    }
+//
+//    @Override
+//    public <C, F extends BiSum<A, C, F>> F pureRight(C l) {
+//        return null;
+//    }
 }

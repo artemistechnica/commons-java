@@ -33,6 +33,16 @@ import static com.artemistechnica.commons.utils.HelperFunctions.getIfPresent;
  */
 public class EitherE<A> extends Either<SimpleError, A> {
 
+    @Override
+    public <C, F extends BiSum<SimpleError, C>> F pureLeft(SimpleError l) {
+        return (F) EitherE.failure(l);
+    }
+
+    @Override
+    public <C, F extends BiSum<SimpleError, C>> F pureRight(C l) {
+        return (F) EitherE.success(l);
+    }
+
     private EitherE(SimpleError left, A right) {
         super(left, right);
     }
@@ -45,10 +55,10 @@ public class EitherE<A> extends Either<SimpleError, A> {
      * @return
      * @param <C>
      */
-    @Override
-    public <C> EitherE<C> map(Function<A, C> fn) {
-        return left.map(EitherE::<C>failure).orElseGet(() -> getIfPresent(right.map(right -> tryFunc(() -> fn.apply(right)))));
-    }
+//    @Override
+//    public <C> EitherE<C> map(Function<A, C> fn) {
+//        return left.map(EitherE::<C>failure).orElseGet(() -> getIfPresent(right.map(right -> tryFunc(() -> fn.apply(right)))));
+//    }
 
     /**
      * Maps a function <i><strong>fn</strong></i> on the value <i><strong>A</strong></i> of an {@link EitherE} that is in a successful state, but does
@@ -105,10 +115,10 @@ public class EitherE<A> extends Either<SimpleError, A> {
      * @return
      * @param <B>
      */
-    public <B> EitherE<B> flatMapE(Function<A, EitherE<B>> fn) {
-        return this.left.map(EitherE::<B>failure)
-                .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
-    }
+//    public <B> EitherE<B> flatMapE(Function<A, EitherE<B>> fn) {
+//        return this.left.map(EitherE::<B>failure)
+//                .orElseGet(() -> right.map(right -> tryEitherEFunc(() -> fn.apply(right))).get());
+//    }
 
     /**
      *

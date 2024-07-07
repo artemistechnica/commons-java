@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.artemistechnica.commons"
-version = "0.0.7-SNAPSHOT"
+version = "0.0.8-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -14,6 +14,10 @@ repositories {
 
 dependencies {
     api("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+    api("org.redisson:redisson:3.32.0")
+    api("org.postgresql:postgresql:42.7.3")
+    api("org.mongodb:mongodb-driver-reactivestreams:5.1.1")
+    api("org.mongodb:mongodb-driver-sync:5.1.1")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

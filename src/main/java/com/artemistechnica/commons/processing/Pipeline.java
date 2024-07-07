@@ -23,7 +23,7 @@ public interface Pipeline {
                     .map(this::step)
                     .reduce(
                             EitherE.success(ctx),
-                            (acc, step) -> acc.flatMapE(step),
+                            (acc, step) -> acc.flatMap(step),
                             (acc0, acc1) -> acc1
                     );
             return resultE.map(PipelineResult::construct);

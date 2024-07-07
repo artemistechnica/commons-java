@@ -203,4 +203,11 @@ public class EitherTests {
         EitherE<String> resultE = initE.map(name -> String.format("Hello, %s!", name));
         assert(resultE.isLeft());
     }
+
+    @Test
+    public void testSimpleEitherEFlatMapSuccess() {
+        EitherE<String> initE   = EitherE.success("World");
+        EitherE<String> resultE = initE.flatMap(name -> EitherE.success(String.format("Hello, %s!", name)));
+        assert(resultE.isRight());
+    }
 }

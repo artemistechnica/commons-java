@@ -26,7 +26,7 @@ public interface Federation extends Pipeline, Authorization, Manager, Metrics {
             c.logging += "\n\t3. |X| Authorization: authorizing (Federation provided)";
             return c;
         });
-        return authFn.apply(ctx.authContext).flatMapE(mat -> mat.materialize(ctx::setAuthContext));
+        return authFn.apply(ctx.authContext).flatMap(mat -> mat.materialize(ctx::setAuthContext));
     }
 
     private EitherE<Context> manage(Context ctx) {
@@ -36,7 +36,7 @@ public interface Federation extends Pipeline, Authorization, Manager, Metrics {
             c.logging += "\n\t6. |X| Managerial Duties: managing (Federation provided)";
             return c;
         });
-        return manageFn.apply(ctx.managerContext).flatMapE(mat -> mat.materialize(ctx::setManagerContext));
+        return manageFn.apply(ctx.managerContext).flatMap(mat -> mat.materialize(ctx::setManagerContext));
     }
 
     default <A> Function<Context, EitherE<A>> proxy(Function<Context, A> proxyFn) {

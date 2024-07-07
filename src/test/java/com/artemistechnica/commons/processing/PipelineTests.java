@@ -21,7 +21,7 @@ public class PipelineTests implements Pipeline {
 
         Function<Integer, EitherE<Integer>>[] steps = fns.<Function<Integer, EitherE<Integer>>>toArray(new Function[0]);
         Function<Integer, EitherE<PipelineResult.Materializer<Integer>>> pipelineFn = this.pipeline(steps);
-        EitherE<Integer> result = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        EitherE<Integer> result = pipelineFn.apply(0).flatMap(mat -> mat.materialize(i -> i));
         assert(result.isRight());
         assert(result.right.isPresent());
         assert(result.right.get() == count);
@@ -49,7 +49,7 @@ public class PipelineTests implements Pipeline {
 
         Function<Long, EitherE<Long>>[] steps = fns.<Function<Long, EitherE<Long>>>toArray(new Function[0]);
         Function<Long, EitherE<PipelineResult.Materializer<Long>>> pipelineFn = this.<Long>pipeline(steps);
-        EitherE<Long> result = pipelineFn.apply(0L).flatMapE(mat -> mat.materialize(i -> i));
+        EitherE<Long> result = pipelineFn.apply(0L).flatMap(mat -> mat.materialize(i -> i));
         assert(result.isRight());
         assert(result.right.isPresent());
         assert(result.right.get() == count);
@@ -62,7 +62,7 @@ public class PipelineTests implements Pipeline {
         );
 
         BiFunction<String, Function<String, EitherE<PipelineResult.Materializer<String>>>, EitherE<String>> fn = (String name, Function<String, EitherE<PipelineResult.Materializer<String>>> pipe) -> {
-            return pipe.apply(name).flatMapE(mat -> mat.materialize(str -> str));
+            return pipe.apply(name).flatMap(mat -> mat.materialize(str -> str));
         };
 
         EitherE<String> result = fn.apply("Nick", p0);
@@ -79,12 +79,12 @@ public class PipelineTests implements Pipeline {
         Function<Integer, EitherE<Integer>>[] steps = fns.<Function<Integer, EitherE<Integer>>>toArray(new Function[0]);
         Function<Integer, EitherE<PipelineResult.Materializer<Integer>>> pipelineFn = this.<Integer>pipeline(steps);
 
-        EitherE<Integer> result = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        EitherE<Integer> result = pipelineFn.apply(0).flatMap(mat -> mat.materialize(i -> i));
         assert(result.isRight());
         assert(result.right.isPresent());
         assert(result.right.get() == count);
 
-        EitherE<Integer> result0 = pipelineFn.apply(0).flatMapE(mat -> mat.materialize(i -> i));
+        EitherE<Integer> result0 = pipelineFn.apply(0).flatMap(mat -> mat.materialize(i -> i));
         assert(result0.isRight());
         assert(result0.right.isPresent());
         assert(result0.right.get() == count);
