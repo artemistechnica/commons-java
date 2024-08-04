@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     api("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+    runtimeOnly("org.postgresql:postgresql:42.7.3")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
